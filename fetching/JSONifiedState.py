@@ -4,6 +4,7 @@ Source code: Source Code: https://web3py.readthedocs.io/en/stable/examples.html?
 
 import time
 import json
+from typing import Optional
 from fetching.EventScannerState import EventScannerState
 from datetime import datetime
 from web3.datastructures import AttributeDict
@@ -15,9 +16,9 @@ class JSONifiedState(EventScannerState):
     Simple load/store massive JSON on start up.
     """
 
-    def __init__(self):
+    def __init__(self, file_name: Optional[str]= "test-state.json"):
         self.state = None
-        self.fname = "test-state.json"
+        self.fname = file_name
         # How many second ago we saved the JSON file
         self.last_save = 0
 
