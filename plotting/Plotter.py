@@ -30,6 +30,11 @@ def millions(x, pos):
     return "$%1.0fM" % (x * 10 ** (-6))
 
 
+def billions(x, pos):
+    """x value, pos positions"""
+    return "$%1.0fB" % (x * 10 ** (-9))
+
+
 class Plotter:
     def __init__(self):
 
@@ -44,6 +49,12 @@ class Plotter:
         """Format the y ticks to show dollar sign and format in millions"""
 
         tick = mtick.FuncFormatter(millions)
+        ax.yaxis.set_major_formatter(tick)
+
+    def format_yticks_in_billions(self, ax):
+        """Format the y ticks to show dollar sign and format in billions"""
+
+        tick = mtick.FuncFormatter(billions)
         ax.yaxis.set_major_formatter(tick)
 
     def format_xticks_using_concise_date_formatter(self, ax):
@@ -128,15 +139,20 @@ class Plotter:
         ylabel: str,
         labels: list,
         file_name: str,
+        linestyles: list,
         title: Optional[str] = "",
         grid: Optional[bool] = False,
         ylim: Optional[list] = [],
         xticks_rotation: Optional[int] = 0,
         folder: Optional[str] = "",
+        set_millions: Optional[bool] = False,
+        set_billions: Optional[bool] = False,
     ):
-
-        for (df, x, y, label, color) in zip(dfs, xs, ys, labels, self.colors):
-            plt.plot(df[x], df[y], label=label, color=color)
+        """Plots multiple lines from multiple dfs"""
+        for (df, x, y, label, color, linestyle) in zip(
+            dfs, xs, ys, labels, self.colors, linestyles
+        ):
+            plt.plot(df[x], df[y], label=label, color=color, linestyle=linestyle)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.legend()
@@ -150,6 +166,14 @@ class Plotter:
         if xticks_rotation > 0:
             for tick in ax.get_xticklabels():
                 tick.set_rotation(xticks_rotation)
+
+        if set_millions:
+            ax = plt.gca()
+            self.format_yticks_in_millions(ax)
+
+        if set_billions:
+            ax = plt.gca()
+            self.format_yticks_in_billions(ax)
         save_folder = self.get_save_folder(folder)
         plt.tight_layout()
         plt.savefig(os.path.join(save_folder, file_name))

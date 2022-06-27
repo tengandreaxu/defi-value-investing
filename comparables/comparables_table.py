@@ -3,54 +3,34 @@ import pandas as pd
 from datetime import datetime
 from fetching.fetch_market_caps import COINGECKO_TOKENS, COINGECKO_TOKENS_2_SYMBOLS
 from fetching.fetch_tvls import DEFILLAMA_TOKENS, DEFILLAMA_TOKENS_2_SYMBOL
+from token_terminal.TokenTerminal import TokenTerminal
+from wrds.StockFundamentals import StockFundamentals
 
-DATE = datetime.fromisoformat("2022-01-01").date()
+# First Quarter 2022
+DATE = datetime.fromisoformat("2022-03-31").date()
 if __name__ == "__main__":
 
-    table = {}
+    wrds = StockFundamentals()
+    token_terminal = TokenTerminal()
 
-    # Load Market Caps
-    for token in COINGECKO_TOKENS:
-        df = pd.read_csv(f"data/market_caps/{token}.csv")
-        df.date = pd.to_datetime(df.date).dt.date
-        dict_ = df[df.date == DATE].to_dict(orient="records")[0]
-        dict_["token"] = COINGECKO_TOKENS_2_SYMBOLS[token]
-        table[COINGECKO_TOKENS_2_SYMBOLS[token]] = dict_
+    for tokens, stocks, category in zip(
+        [
+            token_terminal.dex_tokens,
+            token_terminal.yield_tokens,
+            token_terminal.plf_tokens,
+        ],
+        [wrds.exchanges, wrds.asset_managers, wrds.banks],
+        ["Exchanges", "Asset Managers", "Banks"],
+    ):
 
-    # Load TVLs
-    for token in DEFILLAMA_TOKENS:
-        df = pd.read_csv(f"data/tvls/{token}.csv")
-        df.date = pd.to_datetime(df.date).dt.date
-        dict_ = df[df.date == DATE].to_dict(orient="records")[0]
-        symbol = DEFILLAMA_TOKENS_2_SYMBOL[token]
-        prev_dict = table[symbol]
-        dict_.pop("date")
+        # Create a dataframe with |token| x |features|
+        # features = {price, market_cap} +
+        # + {revenue_total, eps, }
 
-        prev_dict.update(dict_)
-
-    # Create table
-    df = [table[key] for key in table]
-    df = pd.DataFrame(df)
-    df.index = df.token
-    df["Mkt Cap"] = df.totalLiquidityUSD * 0.2
-    df["Protocol Revenue (PR)"] = df.totalLiquidityUSD * 0.1 * 0.2
-    df.pop("total_volumes")
-    df.pop("date")
-    df.pop("token")
-
-    columns = [
-        ("Market Data", "Prices"),
-        ("Market Data", "Mkt Cap"),
-        ("Financial Data", "TVL"),
-        ("Estimations", "Mkt Cap"),
-        ("Estimations", "Protocol Revenue"),
-    ]
-    df.columns = pd.MultiIndex.from_tuples(columns)
-
-    mean_mkt_cap = df[("Estimations", "Mkt Cap")].mean()
-    median_mkt_cap = df[("Estimations", "Mkt Cap")].median()
-
-    mean_protocol_revenue = df[("Estimations", "Protocol Revenue")].mean()
-    median_protocol_revenue = df[("Estimations", "Protocol Revenue")].median()
-
-    df.to_latex("tables/digital_assets/comparables.tex")
+        for token in tokens:
+            df = token_terminal.load_csv(token)
+            # eps = renenue_total / #tokens
+            # tokens = market_cap_circulating / price
+            breakpoint()
+        for stock in stocks:
+            df = stocks.df[stocks.df.tic == stock].copy()

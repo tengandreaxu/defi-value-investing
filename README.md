@@ -10,13 +10,14 @@ We fetch historical market caps and prices from [Coingecko API](https://www.coin
 
 The ***daily*** historical market prices are retrieved using [Binance API](https://github.com/binance/binance-spot-api-docs) 
 
-## Total Value Locked
+## DeFi Fundamentals
 
-Token's Total Value Locked (TVL) is fetched from [DefiLlama API](https://defillama.com/docs/api).
+We retrieve DeFi Tokens' Fundamentals, i.e. Total Value Locked (TVL), Revenues, etc., from the [Token Terminal API](https://docs.tokenterminal.com/api-reference/v2)
 
-## DeFi Treasury Value
 
-We retrieve token's treasury values from [David Mihal's Project: CryptoStats](https://openorgs.info/). CryptoStats is an open-source project with the objective to ease the access to token's data thanks to "Adapters". These Adapters are vanilla Javascript scripts that collects data from different sources, e.g. Coinmetrics, the Graph, etc., and aggregate the data for the end user. 
+## Stock Fundamentals
+
+We download stock fundamentals from the well known Wharton Research Data Services (WRDS) database. In particular, we've worked on the COMPUSTAT & CRSP merged dataset.
 
 ## 10-Year Treasury Bond Interest Rate
 
