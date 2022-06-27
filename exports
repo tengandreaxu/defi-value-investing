@@ -1,2 +1,3 @@
 export DUNE_PASS=ucl-epfl67
 export DUNE_USER=defi_research
+export TOKEN_TERMINAL_API=22f293f3-6eae-46d6-8317-b094895bebee

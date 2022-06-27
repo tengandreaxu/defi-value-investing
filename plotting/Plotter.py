@@ -38,7 +38,7 @@ class Plotter:
         # *******************
         self.logger = logging.getLogger("Plotter")
 
-        self.colors = ["black", "brown", "green", "blue"]
+        self.colors = ["black", "brown", "green", "blue", "pink"]
 
     def format_yticks_in_millions(self, ax):
         """Format the y ticks to show dollar sign and format in millions"""
@@ -83,6 +83,7 @@ class Plotter:
         if set_millions:
             ax = plt.gca()
             self.format_yticks_in_millions(ax)
+
         plt.tight_layout()
 
         save_folder = self.get_save_folder(folder)
