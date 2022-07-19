@@ -1,6 +1,8 @@
 import pandas as pd
 from dataclasses import dataclass
 
+from token_terminal.TokenTerminal import SECOND_QUARTER_2022, LAST_QUARTER_2020
+
 
 @dataclass
 class StockFundamentals:
@@ -15,46 +17,62 @@ class StockFundamentals:
 
     Here we have a brief description of them:
 
-    csh12q, number of common shares outstanding used to compute eps (in millions)
-    cshoq, common shares outstanding (in millions)
-    cdvcy, cash dividends on common stocks (in millions)
-    dvy,cash dividends (in millions)
-        This item represents the total amount of cash dividends paid
-        for common/ordinary capital, preferred/preference capital and other share capital.
-    epspxy, earnings per share excluding extraordinary items (ratio)
-    fincfy, This item represents cash paid or received for all transactions classified as
-            Financing Activities on a Statement of Cash Flows (Format Code = 7).
-            (in millions)
-    revty, total revenue (in millions)
-            This item represents the gross income received from all divisions of the company.
-    sivy, This item represents a source of funds from the sale of investments (in millions)
-    cshtrq, common shares traded quarter (in millions)
-    dvpspq, This item represents the cash dividends per share for which
-            the payable dates occurred during the reporting period. (Dollar and cents)
-    dvpsxq, This item represents the unadjusted cash dividends per share
-            for which the ex-dividend dates occurred during the reporting period (dollar and cent)
-    mkvaltq, market value quarter (in millions)
-    prccq, price close quarter
+    Fundamentals:
 
+        revtq, quarter'ss totalrevenue (in millions)
+        atq, quarter's total asset (in millions),
+        dlcq, quarter's total liabilities (in millions)
+
+    Market Data:
+        prccq, price at close
+        mkvaltq, market cap
     """
 
     def __init__(self):
 
-        self.df = pd.read_csv("data/wrds/stock_fundamentals.csv")
+        self.df = pd.read_csv("data/wrds/stocks_fundamentals.csv")
         self.df["date"] = pd.to_datetime(self.df.datadate).dt.date
-        self.df.pop("datadate")
+        self.df = self.df[
+            (self.df.date >= LAST_QUARTER_2020) & (self.df.date <= SECOND_QUARTER_2022)
+        ]
+        self.df = self.df.rename(
+            columns={
+                "prccq": "price",
+                "mkvaltq": "market_cap",
+                "revtq": "revenue",
+                "tic": "underlying",
+            }
+        )
+        self.asset_managers = [
+            "BRK.B",
+            "BLK",
+            "MS",
+        ]  # "Berkshire Hathaway, BlackRock, Morgan Stanley"
+
+        self.df["net_asset"] = self.df["atq"] - self.df["dlcq"]
+        self.df["mkt_cap_revenue_ratio"] = self.df.market_cap / self.df.revenue
+        self.df["mkt_cap_assets_ratio"] = self.df.market_cap / self.df.net_asset
+
+        self.exchanges = ["NDAQ", "ICE", "CBOE"]
+        self.df = self.df[
+            [
+                "date",
+                "underlying",
+                "price",
+                "market_cap",
+                "revenue",
+                "net_asset",
+                "mkt_cap_revenue_ratio",
+                "mkt_cap_assets_ratio",
+                "piq",
+            ]
+        ]
         self.banks = [
             "BAC",
             "WFC",
             "C",
         ]  # Bank of America, "Well Fargo & Co.". "Citigroup"
-        self.asset_managers = [
-            "BRK.B",
-            "BLK",
-            "JPM",
-        ]  # "Berkshire Hathaway, BlackRock, JP Morgan"
-
-        self.exchanges = ["NDAQ", "ICE", "CBOE"]
+        self.all_assets = self.banks + self.exchanges + self.asset_managers
 
 
 if __name__ == "__main__":

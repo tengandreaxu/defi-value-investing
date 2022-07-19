@@ -145,14 +145,29 @@ class Plotter:
         ylim: Optional[list] = [],
         xticks_rotation: Optional[int] = 0,
         folder: Optional[str] = "",
+        markers: Optional[list] = [],
         set_millions: Optional[bool] = False,
         set_billions: Optional[bool] = False,
     ):
         """Plots multiple lines from multiple dfs"""
-        for (df, x, y, label, color, linestyle) in zip(
-            dfs, xs, ys, labels, self.colors, linestyles
-        ):
-            plt.plot(df[x], df[y], label=label, color=color, linestyle=linestyle)
+
+        if len(markers) > 0:
+            for (df, x, y, label, color, linestyle, marker) in zip(
+                dfs, xs, ys, labels, self.colors, linestyles, markers
+            ):
+                plt.plot(
+                    df[x],
+                    df[y],
+                    label=label,
+                    color=color,
+                    linestyle=linestyle,
+                    marker=marker,
+                )
+        else:
+            for (df, x, y, label, color, linestyle) in zip(
+                dfs, xs, ys, labels, self.colors, linestyles
+            ):
+                plt.plot(df[x], df[y], label=label, color=color, linestyle=linestyle)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.legend()

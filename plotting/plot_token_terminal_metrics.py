@@ -7,7 +7,7 @@ if __name__ == "__main__":
     df = df[~df.treasury.isna()]
     df["date"] = pd.to_datetime(df.timestamp).dt.date
     plotter = Plotter()
-    breakpoint()
+
     plotter.plot_line_from_columns(
         df,
         "date",
