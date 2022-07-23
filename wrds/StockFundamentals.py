@@ -65,6 +65,8 @@ class StockFundamentals:
                 "mkt_cap_revenue_ratio",
                 "mkt_cap_assets_ratio",
                 "piq",
+                "atq",
+                "dlcq",
             ]
         ]
         self.banks = [

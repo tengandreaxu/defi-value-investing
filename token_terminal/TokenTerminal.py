@@ -30,7 +30,7 @@ class TokenTerminal:
 
         self.yield_tokens = ["idle-finance", "yearn-finance"]
         self.plf_tokens = ["aave", "compound"]
-        self.dex_tokens = ["balancer", "uniswap"]
+        self.dex_tokens = ["curve", "uniswap"]
         self.all_tokens = self.yield_tokens + self.plf_tokens + self.dex_tokens
         self.tokens_2_symbol = {
             "idle-finance": "IDLE",
@@ -38,7 +38,7 @@ class TokenTerminal:
             "balancer": "BAL",
             "uniswap": "UNI",
             "aave": "AAVE",
-            "compound": "COMP",
+            "curve": "CRV",
         }
 
         self.datasets = os.path.join("data", "token_terminal")
@@ -49,7 +49,7 @@ class TokenTerminal:
         quarters = []
         for i in range(len(QUARTERS) - 1):
             quarter = df[(df.date > QUARTERS[i]) & (df.date <= QUARTERS[i + 1])].copy()
-            quarter["revenue"] = quarter.revenue_total.cumsum()
+            quarter["revenue"] = quarter.revenue_protocol.cumsum()
             quarter = quarter[quarter.date == QUARTERS[i + 1]]
             quarters.append(quarter)
         quarters = pd.concat(quarters)
@@ -68,7 +68,7 @@ class TokenTerminal:
         df = df[df.date >= LAST_QUARTER_2020]
 
         df.treasury = df.treasury / (10**6)
-        df.revenue_total = df.revenue_total / (10**6)
+        df.revenue_protocol = df.revenue_protocol / (10**6)
         df.market_cap_circulating = df.market_cap_circulating / (10**6)
         df.tvl = df.tvl / (10**6)
         df["mkt_cap_tvl_ratio"] = df.market_cap_circulating / df.tvl
@@ -77,7 +77,12 @@ class TokenTerminal:
 
     def get_quaterly_fundamentals(self, token_name: str) -> pd.DataFrame:
         df = self.get_sorted_df(token_name)
-        df = df[~df.revenue_total.isna()]
+        if token_name == "uniswap":
+            df = df[~df.revenue_total.isna()]
+            df["revenue_protocol"] = df.revenue_total * 0.1
+        else:
+            df = df[~df.revenue_protocol.isna()]
+
         df = df[(df.date >= LAST_QUARTER_2020) & (df.date <= SECOND_QUARTER_2022)]
 
         if LAST_QUARTER_2020 not in df.date.unique():
@@ -86,8 +91,9 @@ class TokenTerminal:
                     df = df[df.date > quarter]
                     break
         # Change in millions
+        df["shares"] = df.market_cap_circulating / df.price
         df.treasury = df.treasury / (10**6)
-        df.revenue_total = df.revenue_total / (10**6)
+        df.revenue_protocol = df.revenue_protocol / (10**6)
         df.market_cap_circulating = df.market_cap_circulating / (10**6)
 
         df = self.compute_quaterly_revenue(df)
