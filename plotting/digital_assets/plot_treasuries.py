@@ -12,7 +12,7 @@ if __name__ == "__main__":
     labels = []
     # Yield Aggregators
     for yield_ in token_terminal.yield_tokens:
-        dfs.append(token_terminal.load_csv(yield_))
+        dfs.append(token_terminal.load_csv(yield_, set_millions=False))
         labels.append(token_terminal.tokens_2_symbol[yield_])
 
     plotter.plot_line_from_dfs(
@@ -22,7 +22,7 @@ if __name__ == "__main__":
         xlabel="Date",
         ylabel="Total Value Locked (TVL)",
         labels=labels,
-        file_name=os.path.join("digital-assets-book", "tvl_yield_agg.png"),
+        file_name=os.path.join("digital-assets-book", "tvl_yield_agg.pdf"),
         linestyles=["solid", "dotted"],
         xticks_rotation=90,
         grid=True,
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     labels = []
     # PLFs
     for plf in token_terminal.plf_tokens:
-        dfs.append(token_terminal.load_csv(plf))
+        dfs.append(token_terminal.load_csv(plf, set_millions=False))
         labels.append(token_terminal.tokens_2_symbol[plf])
 
     plotter.plot_line_from_dfs(
@@ -43,7 +43,7 @@ if __name__ == "__main__":
         xlabel="Date",
         ylabel="Total Value Locked (TVL)",
         labels=labels,
-        file_name=os.path.join("digital-assets-book", "tvl_plf.png"),
+        file_name=os.path.join("digital-assets-book", "tvl_plf.pdf"),
         linestyles=["solid", "dotted"],
         grid=True,
         xticks_rotation=90,
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     labels = []
     # DEXs
     for dex in token_terminal.dex_tokens:
-        dfs.append(token_terminal.load_csv(dex))
+        dfs.append(token_terminal.load_csv(dex, set_millions=False))
         labels.append(token_terminal.tokens_2_symbol[dex])
     plotter.plot_line_from_dfs(
         dfs=dfs,
@@ -66,5 +66,5 @@ if __name__ == "__main__":
         linestyles=["solid", "dotted"],
         grid=True,
         set_billions=True,
-        file_name=os.path.join("digital-assets-book", "tvl_dexs.png"),
+        file_name=os.path.join("digital-assets-book", "tvl_dexs.pdf"),
     )

@@ -18,8 +18,8 @@ logging.basicConfig(level=logging.INFO)
 params = {
     "axes.labelsize": 14,
     "axes.labelweight": "bold",
-    "xtick.labelsize": 12,
-    "ytick.labelsize": 12,
+    "xtick.labelsize": 16,
+    "ytick.labelsize": 16,
     "axes.titlesize": 12,
 }
 pylab.rcParams.update(params)

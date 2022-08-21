@@ -35,6 +35,7 @@ class StockFundamentals:
         self.df = self.df[
             (self.df.date >= LAST_QUARTER_2020) & (self.df.date <= SECOND_QUARTER_2022)
         ]
+
         self.df = self.df.rename(
             columns={
                 "prccq": "price",

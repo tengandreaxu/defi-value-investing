@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from tabulate import tabulate
 from token_terminal.TokenTerminal import TokenTerminal
@@ -10,10 +11,10 @@ def terminal_value(r: float, g: float, fcf_n: float) -> float:
 
 if __name__ == "__main__":
     """Here we run the canonical DCF model to evaluate token projects"""
-    # risk free rate
+    # risk free rate as risky asset
     r = 0.25
-    # growth rate
-    gdp = 0.1
+    gdp = 0.0239
+
     workforce_expense = 0.2
     token_terminal = TokenTerminal()
 
@@ -69,7 +70,9 @@ if __name__ == "__main__":
         dcf_df["price_per_token"] = (dcf_df.net_present_value * (10**6)) / df.iloc[
             -1
         ].shares
-        file_name = f"tables/digital_assets/dcf/{token}.tsv"
+        output_dir = f"tables/digital_assets/dcf/"
+        os.makedirs(output_dir, exist_ok=True)
+        file_name = os.path.join(output_dir, f"{token}.tsv")
         dcf_df = dcf_df.round(3)
         with open(file_name, "w") as f:
             f.write(tabulate(dcf_df, headers="keys", tablefmt="psql"))

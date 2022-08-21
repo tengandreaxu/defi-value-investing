@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+data/wrds/stocks_daily.csv
 # C extensions
 *.so
 

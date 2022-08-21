@@ -40,7 +40,7 @@ if __name__ == "__main__":
         ylabel=ylabel,
         labels=labels,
         file_name=os.path.join(
-            "digital-assets-book", "fundamentals_asset_managers_mkt_cap_revenue.png"
+            "digital-assets-book", "fundamentals_asset_managers_mkt_cap_revenue.pdf"
         ),
         linestyles=linestyles,
         xticks_rotation=90,
@@ -57,7 +57,7 @@ if __name__ == "__main__":
         ylabel=ylabel_asset,
         labels=labels,
         file_name=os.path.join(
-            "digital-assets-book", "fundamentals_asset_managers_mkt_cap_net_asset.png"
+            "digital-assets-book", "fundamentals_asset_managers_mkt_cap_net_asset.pdf"
         ),
         linestyles=linestyles,
         xticks_rotation=90,
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         grid=True,
         markers=markers,
         file_name=os.path.join(
-            "digital-assets-book", "fundamentals_ex_mkt_cap_revenue.png"
+            "digital-assets-book", "fundamentals_ex_mkt_cap_revenue.pdf"
         ),
     )
     plotter.plot_line_from_dfs(
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         ylabel=ylabel_asset,
         labels=labels,
         file_name=os.path.join(
-            "digital-assets-book", "fundamentals_ex_mkt_cap_net_asset.png"
+            "digital-assets-book", "fundamentals_ex_mkt_cap_net_asset.pdf"
         ),
         markers=markers,
         linestyles=linestyles,
@@ -128,7 +128,7 @@ if __name__ == "__main__":
         ylabel=ylabel,
         labels=labels,
         file_name=os.path.join(
-            "digital-assets-book", "fundamentals_banks_mkt_cap_net_revenue.png"
+            "digital-assets-book", "fundamentals_banks_mkt_cap_net_revenue.pdf"
         ),
         linestyles=linestyles,
         grid=True,
@@ -143,7 +143,7 @@ if __name__ == "__main__":
         ylabel=ylabel_asset,
         labels=labels,
         file_name=os.path.join(
-            "digital-assets-book", "fundamentals_banks_mkt_cap_net_asset.png"
+            "digital-assets-book", "fundamentals_banks_mkt_cap_net_asset.pdf"
         ),
         linestyles=linestyles,
         xticks_rotation=90,

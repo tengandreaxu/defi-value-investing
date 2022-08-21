@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 # First Quarter 2022
-LAST_QUARTER_2020 = datetime.fromisoformat("2020-09-30").date()
+LAST_QUARTER_2020 = datetime.fromisoformat("2020-12-31").date()
 SECOND_QUARTER_2022 = datetime.fromisoformat("2022-06-30").date()
 
 QUARTERS = [
@@ -35,7 +35,7 @@ class TokenTerminal:
         self.tokens_2_symbol = {
             "idle-finance": "IDLE",
             "yearn-finance": "YFI",
-            "balancer": "BAL",
+            "compound": "COMP",
             "uniswap": "UNI",
             "aave": "AAVE",
             "curve": "CRV",
@@ -62,15 +62,17 @@ class TokenTerminal:
         df = df.sort_values("date")
         return df
 
-    def load_csv(self, token_name: str) -> pd.DataFrame:
+    def load_csv(
+        self, token_name: str, set_millions: Optional[bool] = True
+    ) -> pd.DataFrame:
         df = self.get_sorted_df(token_name)
         # Change in millions
         df = df[df.date >= LAST_QUARTER_2020]
-
-        df.treasury = df.treasury / (10**6)
-        df.revenue_protocol = df.revenue_protocol / (10**6)
-        df.market_cap_circulating = df.market_cap_circulating / (10**6)
-        df.tvl = df.tvl / (10**6)
+        if set_millions:
+            df.treasury = df.treasury / (10**6)
+            df.revenue_protocol = df.revenue_protocol / (10**6)
+            df.market_cap_circulating = df.market_cap_circulating / (10**6)
+            df.tvl = df.tvl / (10**6)
         df["mkt_cap_tvl_ratio"] = df.market_cap_circulating / df.tvl
         df = df[~df.treasury.isna()]
         return df

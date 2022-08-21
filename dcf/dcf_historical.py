@@ -22,7 +22,7 @@ if __name__ == "__main__":
                 "cqgr",
             ]
         ]
-        df["growth"] = df.revenue / df.revenue.shift(1) - 1
+        df["growth"] = (df.revenue / df.revenue.shift(1) - 1) * 100
         file_name = f"tables/digital_assets/{token}.tsv"
 
         df = df.round(2)

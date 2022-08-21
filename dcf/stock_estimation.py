@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from wrds.StockFundamentals import StockFundamentals
 from dcf.estimation import terminal_value
@@ -5,6 +6,7 @@ from typing import Tuple
 from datetime import datetime
 from tabulate import tabulate
 
+# https://www.investopedia.com/ask/answers/063014/what-formula-calculating-weighted-average-cost-capital-wacc.asp#citation-1
 # From 10-K filings
 # Item 8 Financial Statements and Supplementary Data
 # Debt -> Senior Structured Notes Debt
@@ -38,6 +40,7 @@ COST_OF_CAPITAL = {
     "NDAQ": COST_OF_CAPITAL_FINANCIAL_SERVICES,
     "WFC": COST_OF_CAPITAL_BANKS,
 }
+print(COST_OF_CAPITAL)
 # https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/taxrate.html
 TAX_RATE_BANKS = 0.1469
 TAX_RATE_INVESTMENTS = 0.1337
@@ -78,9 +81,6 @@ def get_wacc(df: pd.DataFrame, ticker: str) -> float:
 
 if __name__ == "__main__":
     """Here we run the canonical DCF model to evaluate ticker projects"""
-    # risk free rate
-    r = 0.0298
-    # growth rate
     gdp = 0.0239
 
     wrds = StockFundamentals()
@@ -91,7 +91,7 @@ if __name__ == "__main__":
         last_year_revenue = df[-2:].piq.sum() * 2
         dcf = []
         wacc = get_wacc(df, ticker)
-
+        print(f"{ticker}\t {wacc}")
         for year, growth, period in [
             (2022, 0, 0),
             (2023, 0.05, 1),
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
         dcf.append(
             {
-                "discount_factor": 1 / (1 + r) ** (period + 1),
+                "discount_factor": 1 / (1 + wacc) ** (period + 1),
                 "fcf": terminal_value(wacc, gdp, current_revenue),
                 "workforce_expense": 0,
                 "net_income": terminal_value(wacc, gdp, current_revenue),
@@ -135,7 +135,9 @@ if __name__ == "__main__":
         dcf_df["price_per_token"] = (dcf_df.net_present_value * (10**6)) / df.iloc[
             -1
         ].shares
-        file_name = f"tables/digital_assets/dcf/{ticker}.tsv"
+        output_dir = f"tables/digital_assets/dcf/"
+        os.makedirs(output_dir, exist_ok=True)
+        file_name = os.path.join(output_dir, f"{ticker}.tsv")
         dcf_df = dcf_df.round(3)
         with open(file_name, "w") as f:
             f.write(tabulate(dcf_df, headers="keys", tablefmt="psql"))
