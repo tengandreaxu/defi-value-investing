@@ -6,6 +6,7 @@ if __name__ == "__main__":
     stocks = StockFundamentals()
     pattern = [" && ", " & ", " & ", " & ", " && ", " & ", " && "]
     for ticker in stocks.all_assets:
+
         df = stocks.df[stocks.df.underlying == ticker].copy()
         initial_value = df.iloc[1].piq if df.shape[0] == 8 else df.iloc[0].piq
         df["cqgr"] = (
@@ -30,7 +31,8 @@ if __name__ == "__main__":
         with open(file_name, "w") as f:
             f.write(tabulate(df, headers="keys", tablefmt="psql"))
             f.write("\n")
-        df.at[df.growth == "nan", "growth"] = "$NA$"
+        df.loc[df.growth == "nan", "growth"] = "$NA$"
+
         for column in ["piq", "growth"]:
 
             items = df[column].tolist()

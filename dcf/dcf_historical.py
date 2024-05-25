@@ -10,6 +10,8 @@ if __name__ == "__main__":
     quarters = np.flip(np.array(QUARTERS))
     pattern = [" && ", " & ", " & ", " & ", " && ", " & ", " && "]
     for token in token_terminal.all_tokens:
+
+        print(token)
         df = token_terminal.get_quaterly_fundamentals(token)
         df = df[~df.revenue.isna()]
         df["cqgr"] = (df.iloc[-1].revenue / df.iloc[0].revenue) ** (

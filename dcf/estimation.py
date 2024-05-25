@@ -6,7 +6,8 @@ from token_terminal.TokenTerminal import TokenTerminal
 
 def terminal_value(r: float, g: float, fcf_n: float) -> float:
     """compute the terminal value"""
-    return (fcf_n * (1 + g)) / r - g
+
+    return (fcf_n * (1 + g)) / (r - g)
 
 
 if __name__ == "__main__":
@@ -19,6 +20,7 @@ if __name__ == "__main__":
     token_terminal = TokenTerminal()
 
     for token in token_terminal.all_tokens:
+
         df = token_terminal.get_quaterly_fundamentals(token)
 
         # revenues are in millions -
@@ -53,9 +55,9 @@ if __name__ == "__main__":
         dcf.append(
             {
                 "discount_factor": 1 / (1 + r) ** (period + 1),
-                "fcf": terminal_value(r, gdp, current_revenue),
+                "fcf": terminal_value(r, gdp, net_income),
                 "workforce_expense": 0,
-                "net_income": terminal_value(r, gdp, current_revenue),
+                "net_income": terminal_value(r, gdp, net_income),
                 "year": 0,
                 "growth_rate": 0,
             }
@@ -71,6 +73,7 @@ if __name__ == "__main__":
             -1
         ].shares
         output_dir = f"tables/digital_assets/dcf/"
+
         os.makedirs(output_dir, exist_ok=True)
         file_name = os.path.join(output_dir, f"{token}.tsv")
         dcf_df = dcf_df.round(3)

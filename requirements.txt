@@ -16,7 +16,6 @@ dateparser==1.1.1
 decorator==5.1.1
 Deprecated==1.2.13
 distlib==0.3.4
-distro-info==0.21
 eth-abi==2.1.1
 eth-account==0.5.7
 eth-hash==0.3.2
